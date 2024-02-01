@@ -19,7 +19,7 @@ const PID: FC = () => {
 
   return (
     <div className="form-wrapper">
-      <h5>PID</h5>
+      <h5>PID:</h5>
 
       <form className="d-flex justify-content-between">
         {attributes.map((attribute, index) => (
