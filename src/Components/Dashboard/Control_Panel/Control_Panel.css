@@ -1,0 +1,26 @@
+button {
+  position: relative;
+  padding: 15px;
+  width: 50px;
+  height: 50px;
+  background: #1964d2;
+  border-radius: 50%;
+  border: none;
+  font-size: 1.2rem;
+  color: #e0ffff;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+button:hover {
+  background: #053692;
+  color: #e0ffff;
+}
+
+button:active {
+  transform: scale(0.95);
+}

@@ -1,5 +1,5 @@
 import { FC } from "react";
-import Card from "../Card/Card";
+import ControlPanel from "./Control_Panel/Control_Panel";
 
 const Dashboard: FC = () => {
   return (
@@ -7,7 +7,7 @@ const Dashboard: FC = () => {
       <div className="row">
         <div className="col-8">col-8</div>
         <div className="col-4">
-          <Card />
+          <ControlPanel />
         </div>
       </div>
     </div>
