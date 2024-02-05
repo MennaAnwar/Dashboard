@@ -1,36 +1,67 @@
-import React, { FC, useEffect, useRef } from "react";
-import Input from "../../Input_Field/Input_Field";
+import React, { FC, useState } from "react";
+import { useForm } from "react-hook-form";
+import axios from "axios";
 
-const PID: FC = () => {
-  const attributes = ["Kp", "Ki", "Kd"];
-  const mouseclickRef = useRef(new Audio());
+const PIDControl: FC = () => {
+  const attributes = ["kp", "ki", "kd"];
 
-  useEffect(() => {
-    mouseclickRef.current.src =
-      "https://uploads.sitepoint.com/wp-content/uploads/2023/06/1687569402mixkit-fast-double-click-on-mouse-275.wav";
-    mouseclickRef.current.preload = "auto";
-  }, []);
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm<any>();
 
-  const handleMouseDown = () => {
-    mouseclickRef.current
-      .play()
-      .catch((e) => console.error("Error playing audio:", e));
+  const [params, setParams] = useState<any>({
+    kp: 0,
+    ki: 0,
+    kd: 0,
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setParams({
+      ...params,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const PID_Control = () => {
+    axios
+      .post(`http://192.168.8.119:8000/api/PID_test`, {
+        kp: params.kp,
+        ki: params.ki,
+        kd: params.kd,
+      })
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   return (
     <div className="form-wrapper">
-      <h5>PID:</h5>
+      <h5>PID Control:</h5>
 
-      <form className="d-flex justify-content-between">
+      <form
+        className="d-flex justify-content-between"
+        onSubmit={handleSubmit(PID_Control)}
+      >
         {attributes.map((attribute, index) => (
-          <Input key={index} id={attribute} />
+          <div className="input-group" key={index}>
+            <input
+              type="number"
+              id={attribute}
+              placeholder=""
+              {...register(attribute, { onChange: handleChange })}
+            />
+            <label htmlFor={attribute}>{attribute}</label>
+          </div>
         ))}
-        <button onMouseDown={handleMouseDown} aria-label="Play Click Sound">
-          Go
-        </button>
+        <button type="submit">Go</button>
       </form>
     </div>
   );
 };
 
-export default PID;
+export default PIDControl;

@@ -1,33 +1,64 @@
-import React, { FC, useEffect, useRef } from "react";
-import Input from "../../Input_Field/Input_Field";
+import React, { FC, useState } from "react";
+import { useForm } from "react-hook-form";
+import axios from "axios";
 
 const VelocityControl: FC = () => {
-  const attributes = ["X", "Y", "θ"];
-  const mouseclickRef = useRef(new Audio());
+  const attributes = ["x", "y", "theta"];
 
-  useEffect(() => {
-    mouseclickRef.current.src =
-      "https://uploads.sitepoint.com/wp-content/uploads/2023/06/1687569402mixkit-fast-double-click-on-mouse-275.wav";
-    mouseclickRef.current.preload = "auto";
-  }, []);
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm<any>();
 
-  const handleMouseDown = () => {
-    mouseclickRef.current
-      .play()
-      .catch((e) => console.error("Error playing audio:", e));
+  const [params, setParams] = useState<any>({
+    x: 0,
+    y: 0,
+    theta: 0,
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setParams({
+      ...params,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const vel_Control = () => {
+    axios
+      .post(`http://192.168.8.119:8000/api/velocity_test`, {
+        x: params.x,
+        y: params.y,
+        theta: params.theta,
+      })
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   return (
     <div className="form-wrapper">
       <h5>Velocity Control:</h5>
 
-      <form className="d-flex justify-content-between">
+      <form
+        className="d-flex justify-content-between"
+        onSubmit={handleSubmit(vel_Control)}
+      >
         {attributes.map((attribute, index) => (
-          <Input key={index} id={attribute} />
+          <div className="input-group" key={index}>
+            <input
+              type="number"
+              id={attribute}
+              placeholder=""
+              {...register(attribute, { onChange: handleChange })}
+            />
+            <label htmlFor={attribute}>{attribute}</label>
+          </div>
         ))}
-        <button onMouseDown={handleMouseDown} aria-label="Play Click Sound">
-          Go
-        </button>
+        <button type="submit">Go</button>
       </form>
     </div>
   );
