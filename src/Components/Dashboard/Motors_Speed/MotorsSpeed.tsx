@@ -1,8 +1,9 @@
 import { FC } from "react";
 import Card from "../../Card/Card";
+import SpeedTimeChart from "../../Chart/Chart";
 
 const MotorsSpeed: FC = () => {
-  return <Card Title="Motors Speed" Content={<h1>Chart</h1>} />;
+  return <SpeedTimeChart />;
 };
 
 export default MotorsSpeed;
